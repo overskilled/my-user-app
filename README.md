@@ -1,20 +1,23 @@
 # Welcome to My Users App
-***
+
 
 ## Task
-TODO - What is the problem? And where is the challenge?
+Create a database with sqlite, and the chanllenge was using the mvc model
 
 ## Description
-TODO - How have you solved the problem?
+Created a user model which executes all the request a user could possibly do and afterward creat a controller 
+using sinatra which allows the user to make the request in the database and finally a view page to provide the graphique interface for the users request
+
 
 ## Installation
-TODO - How to install your project? npm install? make? make re?
+run the app.rb file to start the server and connect to the local port
+
 
 ## Usage
-TODO - How does it work?
-```
-./my_project argument1 argument2
-```
+The user connectes to the database and can execute some request such as modifying password, creating new user, and deleting user
+
+ruby app.rb
+curl localhost:8080/
 
 ### The Core Team
 

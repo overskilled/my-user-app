@@ -3,7 +3,7 @@ require 'sqlite3'
 $db_name  ="db.sql"
 $tablename="user"
 
-class Connection
+class Connection_db
 
     def new 
         @db = nil
@@ -24,8 +24,8 @@ class Connection
         firstname varchar(50),
         lastname varchar(50),
         age int,
-        password varchar(5),
-        email varchar(50)
+        password varchar(5) NOT NULL,
+        email varchar(50) NOT NULL UNIQUE 
     );
     SQL
     end
@@ -47,8 +47,12 @@ class User
         @email    =array[5]
     end
     
+    def to_hash
+        {id: @id, firstname: @firstname, lastname: @lastname, age: @age, password: @password, email: @email}
+    end
+
     def inspect
-        %Q|<user id: "#{@id}", firstname: "#{@firstname}", lastname: "#{@lastname}", age: "#{@age}", password: "#{@password}", email: "#{@email}">|
+        query=%Q|<user id: "#{@id}", firstname: "#{@firstname}", lastname: "#{@lastname}", age: "#{@age}", password: "#{@password}", email: "#{@email}">\n|
     end
 
     def self.create(user_info)
@@ -60,9 +64,11 @@ class User
         "#{user_info[:password]}",        
         "#{user_info[:email]}");
         REQUEST
-        puts query
+        #puts query
 
-        Connection.new.execute(query)
+        Connection_db.new.execute(query)
+        
+
     end
 
     def self.find(user_id)
@@ -70,7 +76,7 @@ class User
             SELECT * FROM #{$tablename} WHERE id= #{user_id}
         REQUEST
 
-        rows=Connection.new.execute(query)
+        rows=Connection_db.new.execute(query)
         if rows.any?
             User.new(rows[0])
         else
@@ -84,14 +90,14 @@ class User
         SELECT * FROM #{$tablename} 
     REQUEST
 
-    rows=Connection.new.execute(query)
-    if rows.any?
-        rows.collect do |row|  
-            User.new(rows)
+    rows=Connection_db.new.execute(query)
+        if rows.any?
+            rows.map do |rows|
+                User.new(rows)
+            end
+        else
+            nil
         end
-    else
-         []
-    end
 
     end
 
@@ -103,24 +109,25 @@ class User
 
         REQUEST
         puts query
-        Connection.new.execute(query)
+        Connection_db.new.execute(query)
     end
 
     def self.destroy(user_id)
-        query=<<-REQUEST 
+        query=<<-REQUEST
             DELETE FROM #{$tablename}
-            WHERE id= #{user_id};
+            WHERE id=#{user_id};
         REQUEST
-
-        Connection.new.execute(query)
+        Connection_db.new.execute(query)
     end
     
 end
 
 def _main()
-    p User.destroy(1)
-   p User.find(1)
-   # p User.create(firstname: "Ouatedem", lastname: "Yvan", age: 25, password: "gigs", email: "ouateedemloic@gmail.com")
+    
+   # User.all
+   #p User.create(firstname: "peaky", lastname: "blinders", age: 70, password: "tommy", email: "shelby_inc@gmail.com")
+
+    #p User.create(firstname: "dave", lastname: "huncho", age: 45, password: "personna", email: "nongrata@gmail.com")
 end
 
 _main()
